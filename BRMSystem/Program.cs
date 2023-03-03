@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BRMSContext>(con => con.UseSqlServer(builder.Configuration.GetConnectionString("connectionstr")));
 builder.Services.AddScoped<IBorrowerManager, BorrowerManager>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -30,5 +31,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// app.MapHub<EventHub>("/eventHub");
 
 app.Run();
