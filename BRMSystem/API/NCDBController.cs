@@ -15,6 +15,12 @@ namespace BRMSystem.API
             {"444-44-4444", 60 }
         };
 
+        [HttpGet]
+        public ActionResult<Dictionary<string, int>> GetCrimeIndex()
+        {
+            return Ok(_crimeIndexes);
+        }
+
         [HttpGet("{ssn}")]
         public ActionResult<int> GetCrimeIndex(string ssn)
         {

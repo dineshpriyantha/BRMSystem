@@ -22,18 +22,12 @@ namespace BRMSystem.Controllers
             try
             {
                 var borrower = _borrower.GetBorrowers().Result;
-                if(borrower != null)
-                    ViewBag.Borrowers = borrower;                
+                ViewBag.Borrowers = borrower;                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
@@ -45,18 +39,20 @@ namespace BRMSystem.Controllers
         [HttpPost]
         public IActionResult Create(Borrower borrower)
         {
-            if(ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                try
-                {
-                    _borrower.AddBorrower(borrower);
-                    ViewBag.message = "Data Saved Successfully..";
-                }
-                catch (Exception)
-                {
-                    throw;
-                }                
-            }           
+                return View(borrower);         
+            }
+
+            try
+            {
+                _borrower.AddBorrower(borrower);
+                ViewBag.message = "Data Saved Successfully..";
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
 
             ModelState.Clear();
             return View();
