@@ -28,7 +28,7 @@ namespace BRMSystem.Controllers
         {
             try
             {
-                AlertManager alert = new AlertManager(_borrower, _hubContext);
+                AlertManager alert = new(_borrower, _hubContext);
                 alert.ProcessAlerts();
 
                 var borrower = _borrower.GetBorrowers().Result;
@@ -36,7 +36,8 @@ namespace BRMSystem.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(ex, "An error occured in the Index action.");
+                return Error(ex);
             }
             return View();
         }
@@ -61,7 +62,8 @@ namespace BRMSystem.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(ex, "An error occured in the Create action");
+                return Error(ex);
             }
 
             ModelState.Clear();
@@ -69,9 +71,16 @@ namespace BRMSystem.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(Exception ex)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorViewModel = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            _logger.LogError(ex, "An unhandled exception occurred.");
+
+            return View(errorViewModel);
         }
     }
 }

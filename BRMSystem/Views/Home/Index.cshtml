@@ -17,6 +17,17 @@
                 return;
             }
 
+            // format the date
+            var date = new Date(alertData.date).toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                hour12: true
+            });
+
             // Add the alert to the list of displayed alerts
             displayAlerts.push(alertData);            
 
@@ -24,7 +35,7 @@
             var alertComponent = document.createElement("div");
             alertComponent.classList.add("alert", "alert-warning", "alert-dismissible", "fade", "show");
             alertComponent.innerHTML = `
-                        <strong>Alert:</strong> Message: ${alertData.message}, Timestamp: ${alertData.date}
+                                <strong>Alert:</strong> ${alertData.message}, Timestamp: ${date}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
             document.getElementById("event-container").appendChild(alertComponent);

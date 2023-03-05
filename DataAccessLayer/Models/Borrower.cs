@@ -20,12 +20,14 @@ namespace DataAccessLayer.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "SSN is required")]
         [SSNFormat]
-        public string SSN { get; set; }
+        public string? SSN { get; set; }
         public string? MailingAddress { get; set; }
     }
 

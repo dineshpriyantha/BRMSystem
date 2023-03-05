@@ -3,6 +3,7 @@ using DataAccessLayer;
 using DataAccessLayer.Models;
 using EventGenerator;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,13 @@ using System.Threading.Tasks;
 
 namespace BusinessLogic.Services
 {
-    public class AlertManager
+    public class AlertManager : INCDBService, ICreditBureauService
     {
         private readonly IBorrowerManager _borrower;
         private readonly IHubContext<EventHub> _hubContext;
 
-        public AlertManager(IBorrowerManager borrower, IHubContext<EventHub> hubContext)
+        public AlertManager(IBorrowerManager borrower, 
+                            IHubContext<EventHub> hubContext)
         {
             _borrower = borrower;
             _hubContext = hubContext;
@@ -27,43 +29,36 @@ namespace BusinessLogic.Services
 
         public async void ProcessAlerts()
         {
-            try
-            {
-                var borrowes = _borrower.GetBorrowers().Result;                
+            var borrowes = _borrower.GetBorrowers().Result;
 
-                foreach (var borrower in borrowes)
+            foreach (var borrower in borrowes)
+            {
+                int ncdbIndex = await GetCrimeIndex(borrower.SSN);
+                int creditScore = await GetCreditScore(borrower.SSN);
+
+                if (ncdbIndex > 0)
                 {
-                    int ncdbIndex = await GetDataFromNCBD(borrower.SSN);
-                    int creditScore = await GetDataFromCreditBureau(borrower.SSN);
-
-                    if (ncdbIndex > 0)
+                    Alert alert = new Alert()
                     {
-                        Alert alert = new Alert()
-                        {
-                            Type = AlertType.CriminalRecord,
-                            BorrowerId = borrower.Id,
-                            Date = DateTime.Now,
-                            Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} crime Index : {ncdbIndex}"
-                        };
-                        EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
-                    }
-
-                    if (0 < creditScore && creditScore < 600)
-                    {
-                        Alert alert = new Alert()
-                        {
-                            Type = AlertType.LowCreditScore,
-                            BorrowerId = borrower.Id,
-                            Date = DateTime.Now,
-                            Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} Credit Score: {creditScore}"
-                        };
-                        EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
-                    }
+                        Type = AlertType.CriminalRecord,
+                        BorrowerId = borrower.Id,
+                        Date = DateTime.Now,
+                        Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} crime Index : {ncdbIndex}"
+                    };
+                    EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
                 }
-            }
-            catch (Exception)
-            {
-                throw;
+
+                if (0 < creditScore && creditScore < 600)
+                {
+                    Alert alert = new Alert()
+                    {
+                        Type = AlertType.LowCreditScore,
+                        BorrowerId = borrower.Id,
+                        Date = DateTime.Now,
+                        Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} Credit Score: {creditScore}"
+                    };
+                    EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
+                }
             }
         }
 
@@ -76,7 +71,7 @@ namespace BusinessLogic.Services
             return client;
         }
 
-        private async Task<int> GetDataFromCreditBureau(string borrowerSSN)
+        public async Task<int> GetCreditScore(string borrowerSSN)
         {
             using (var client = GetHttpClient())
             {                
@@ -101,7 +96,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        private async Task<int> GetDataFromNCBD(string borrowerSSN)
+        public async Task<int> GetCrimeIndex(string borrowerSSN)
         {
             using (var client = GetHttpClient())
             {
@@ -125,8 +120,6 @@ namespace BusinessLogic.Services
                 }
             }
         }
-
-        // Other methods to add, retrieve, and delete alerts
     }
 
 }
