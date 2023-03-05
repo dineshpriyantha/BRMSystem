@@ -28,9 +28,8 @@ namespace BRMSystem.Controllers
         {
             try
             {
-                //GenerateEvents();
-                EventGenerateHub generator = new EventGenerateHub(_hubContext);               
-
+                AlertManager alert = new AlertManager(_borrower, _hubContext);
+                alert.ProcessAlerts();
 
                 var borrower = _borrower.GetBorrowers().Result;
                 ViewBag.Borrowers = borrower;                

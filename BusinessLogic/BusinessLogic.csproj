@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
+    <ProjectReference Include="..\EventGenerator\EventGenerator.csproj" />
   </ItemGroup>
 
 </Project>

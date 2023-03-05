@@ -8,23 +8,19 @@ namespace EventGenerator
     {
         private readonly IHubContext<EventHub> _hubContext;
         private readonly Timer _timer;
+        private readonly Alert _alert;
 
-        public EventGenerateHub(IHubContext<EventHub> hubContext)
+        public EventGenerateHub(IHubContext<EventHub> hubContext, Alert alert)
         {
             _hubContext = hubContext;
-            _timer = new Timer(GenerateEvents, null, 0, 5000); // Generate events every 5 seconds
+            _alert = alert;
+            _timer = new Timer(GenerateEvents, null, 0, 5000); // Generate events every 5 seconds            
         }
 
-        private void GenerateEvents(object state)
+        public void GenerateEvents(object data)
         {
-            var eventData = new Event
-            {
-                Timestamp = DateTime.UtcNow,
-                Value = new Random().Next(1, 100)
-            };
-
             // Send event to clients
-            _hubContext.Clients.All.SendAsync("ReceiveEvent", eventData);
+             _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
         }
     }
 }

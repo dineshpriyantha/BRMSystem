@@ -10,9 +10,14 @@ namespace DataAccessLayer.Models
     {
         public int Id { get; set; }
         public int BorrowerId { get; set; }
-        public string Type { get; set; }
+        public AlertType Type { get; set; }
         public string Message { get; set; }
         public DateTime Date { get; set; }
     }
 
+    public enum AlertType
+    {
+        CriminalRecord,
+        LowCreditScore
+    }
 }

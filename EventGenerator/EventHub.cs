@@ -5,10 +5,10 @@ namespace BRMSystem.EventGenerator
 {
     public class EventHub : Hub
     {
-        public async Task SendEvent(Event eventData)
+        public async Task SendEvent(Alert alertData)
         {
             // Send the event data to all connected clients
-            await Clients.All.SendAsync("RecieveEvent", eventData);
+            await Clients.All.SendAsync("RecieveEvent", alertData);
         }
     }
 }

@@ -21,33 +21,36 @@ namespace BRMSystem.API
 
         [HttpGet("creditbureau/{borrowerSSN}")]
         public async Task<ActionResult> ReceiveAlertFromCreditBureau(string borrowerSSN)
-        {         
-            using var client = GetHttpClient();
-            try
+        {
+            using (var client = GetHttpClient())
             {
-                // Send the Http Get request to the bureau API endpoint with the borrower's SSN
-                HttpResponseMessage response = await client.GetAsync($"CreditBureau/{borrowerSSN}");
+                try
+                {
+                    // Send the Http Get request to the bureau API endpoint with the borrower's SSN
+                    HttpResponseMessage response = await client.GetAsync($"CreditBureau/{borrowerSSN}");
 
-                // Check if the response indicates success
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = await response.Content.ReadAsStringAsync();
-                    return Ok(result);
+                    // Check if the response indicates success
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
+                        return Ok(result);
+                    }
+                    // Check if the response indicates that the requested resource was not found (Http status code 404)
+                    else if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return NotFound($"SSN :{borrowerSSN} not found");
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server error");
+                    }
                 }
-                // Check if the response indicates that the requested resource was not found (Http status code 404)
-                else if (response.StatusCode == HttpStatusCode.NotFound)
+                catch (HttpRequestException ex)
                 {
-                    return NotFound($"SSN :{borrowerSSN} not found");
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server error");
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
-            catch (HttpRequestException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+            
         }
 
         [HttpGet("ncdb/{borrowerSSN}")]

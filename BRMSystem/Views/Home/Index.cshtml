@@ -9,13 +9,23 @@
             .withUrl("/eventhub")
             .build();
 
-        connection.on("ReceiveEvent", function (eventData) {
+        let displayAlerts = [];
+
+        connection.on("ReceiveEvent", function (alertData) {
+            // Check if the alert has already been displayed
+            if (displayAlerts.some(alert => alert.borrowerId === alertData.borrowerId)){
+                return;
+            }
+
+            // Add the alert to the list of displayed alerts
+            displayAlerts.push(alertData);            
+
             // Display the received event data in the event container
             var alertComponent = document.createElement("div");
             alertComponent.classList.add("alert", "alert-warning", "alert-dismissible", "fade", "show");
             alertComponent.innerHTML = `
-                <strong>New Event:</strong> Value: ${eventData.value}, Timestamp: ${eventData.timestamp}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>Alert:</strong> Message: ${alertData.message}, Timestamp: ${alertData.date}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
             document.getElementById("event-container").appendChild(alertComponent);
         });

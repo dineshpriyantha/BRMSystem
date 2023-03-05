@@ -11,7 +11,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BRMSContext>(con => con.UseSqlServer(builder.Configuration.GetConnectionString("connectionstr")));
 builder.Services.AddScoped<IBorrowerManager, BorrowerManager>();
 builder.Services.AddSignalR();
-//builder.Services.AddSingleton<EventGenerator>();
 
 var app = builder.Build();
 

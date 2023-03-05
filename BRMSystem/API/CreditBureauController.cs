@@ -9,9 +9,9 @@ namespace BRMSystem.API
     {
         private static readonly Dictionary<string, int> _creditScores = new Dictionary<string, int>()
         {
-            {"111-11-1111", 750 },
+            {"111-11-1111", 50 },
             {"222-22-2222", 600 },
-            {"333-33-3333", 700 },
+            {"333-33-3333", 500 },
             {"444-44-4444", 900 }
         };
 
