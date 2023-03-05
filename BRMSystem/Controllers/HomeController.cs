@@ -2,6 +2,7 @@
 using BRMSystem.Models;
 using BusinessLogic.Services;
 using DataAccessLayer.Models;
+using EventGenerator;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Diagnostics;
@@ -23,32 +24,12 @@ namespace BRMSystem.Controllers
             _hubContext = hubContext;
         }
 
-        public async Task GenerateEvents()
-        {
-            while (true)
-            {
-                // Generate event data
-                var eventData = new Event
-                {
-                    Timestamp = DateTime.UtcNow,
-                    Value = new Random().Next(1, 100)
-                };
-
-                // Send event data to SignalR hub
-                await _hubContext.Clients.All.SendAsync("ReceiveEvent", eventData);
-
-                // Wait for a specified interval before generating the next event
-                await Task.Delay(TimeSpan.FromSeconds(1));
-            }
-        }
-
-
         public IActionResult Index()
         {
             try
             {
                 //GenerateEvents();
-                EventGenerateHub generator1 = new EventGenerateHub(_hubContext);               
+                EventGenerateHub generator = new EventGenerateHub(_hubContext);               
 
 
                 var borrower = _borrower.GetBorrowers().Result;

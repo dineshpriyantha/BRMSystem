@@ -4,27 +4,6 @@
 
 @section scripts {
     <script src="~/lib/signalr/signalr.min.js"></script>
-    @*<script>
-        var connection = new signalR.HubConnectionBuilder().withUrl("/eventhub").build();
-
-        connection.on("ReceiveNotification", function (message) {
-            alert(message);
-        });
-
-        connection.start().catch(function (err) {
-            console.error(err.toString());
-        });
-
-        document.getElementById("notification-form").addEventListener("submit", function (event) {
-            event.preventDefault();
-            var messageInput = document.getElementById("message-input");
-            connection.invoke("SendNotification", messageInput.value).catch(function (err) {
-                console.error(err.toString());
-            });
-            messageInput.value = "";
-        });
-    </script>*@
-
     <script>
         var connection = new signalR.HubConnectionBuilder()
             .withUrl("/eventhub")

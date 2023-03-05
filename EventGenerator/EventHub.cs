@@ -11,5 +11,4 @@ namespace BRMSystem.EventGenerator
             await Clients.All.SendAsync("RecieveEvent", eventData);
         }
     }
-
 }
