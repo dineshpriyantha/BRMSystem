@@ -20,7 +20,7 @@ namespace BRMSystem.API
         }
 
         [HttpGet("creditbureau/{borrowerSSN}")]
-        public async Task<ActionResult> ReceiveAlertFromCreditBureau(string borrowerSSN)
+        public async Task<ActionResult> ReceiveDataFromCreditBureau(string borrowerSSN)
         {
             using (var client = GetHttpClient())
             {
@@ -54,19 +54,22 @@ namespace BRMSystem.API
         }
 
         [HttpGet("ncdb/{borrowerSSN}")]
-        public async Task<ActionResult> ReceiveAlertFromNCDB(string borrowerSSN)
+        public async Task<ActionResult> ReceiveDataFromNCDB(string borrowerSSN)
         {
             using(var client = GetHttpClient())
             {
                 try
                 {
+                    // Send the Http Get request to the NCDB API endpoint with the borrower's SSN
                     HttpResponseMessage response = await client.GetAsync($"NCDB/{borrowerSSN}");
 
+                    // Check if the response indicates success
                     if (response.IsSuccessStatusCode)
                     {
                         string result = await response.Content.ReadAsStringAsync();
                         return Ok(result);
                     }
+                    // Check if the response indicates that the requested resource was not found (Http status code 404)
                     else if (response.StatusCode == HttpStatusCode.NotFound)
                     {
                         return NotFound($"SSN :{borrowerSSN} not found");

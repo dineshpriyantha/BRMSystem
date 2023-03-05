@@ -20,7 +20,7 @@ namespace EventGenerator
         public void GenerateEvents(object data)
         {
             // Send event to clients
-             _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
+            _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
         }
     }
 }

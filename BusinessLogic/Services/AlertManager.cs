@@ -18,7 +18,6 @@ namespace BusinessLogic.Services
     {
         private readonly IBorrowerManager _borrower;
         private readonly IHubContext<EventHub> _hubContext;
-        //private readonly Timer _timer;
 
         public AlertManager(IBorrowerManager borrower, IHubContext<EventHub> hubContext)
         {

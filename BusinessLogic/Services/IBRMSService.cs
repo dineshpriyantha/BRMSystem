@@ -9,7 +9,7 @@ namespace BusinessLogic.Services
 {
     public interface IBRMSService
     {
-        Task<ActionResult> ReceiveAlertFromNCDB(string borrowerSSN); //int crimeIndex
-        Task<ActionResult> ReceiveAlertFromCreditBureau(string borrowerSSN); //double creditScore
+        Task<ActionResult> ReceiveDataFromNCDB(string borrowerSSN);
+        Task<ActionResult> ReceiveDataFromCreditBureau(string borrowerSSN);
     }
 }
