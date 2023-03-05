@@ -43,7 +43,7 @@ namespace BusinessLogic.Services
                         Type = AlertType.CriminalRecord,
                         BorrowerId = borrower.Id,
                         Date = DateTime.Now,
-                        Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} crime Index : {ncdbIndex}"
+                        Message = $"The borrower name: {borrower.Name} <br/> SSN : {borrower.SSN} <br/> Crime Index : {ncdbIndex}"
                     };
                     EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
                 }
@@ -55,7 +55,7 @@ namespace BusinessLogic.Services
                         Type = AlertType.LowCreditScore,
                         BorrowerId = borrower.Id,
                         Date = DateTime.Now,
-                        Message = $"The borrower name: {borrower.Name} SSN : {borrower.SSN} Credit Score: {creditScore}"
+                        Message = $"The borrower name: {borrower.Name} <br/> SSN : {borrower.SSN} <br/> Credit Score: {creditScore}"
                     };
                     EventGenerateHub eventHub = new EventGenerateHub(_hubContext, alert);
                 }
