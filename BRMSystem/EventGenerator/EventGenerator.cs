@@ -1,8 +1,7 @@
-﻿using BRMSystem.EventGenerator;
-using DataAccessLayer.Models;
+﻿using DataAccessLayer.Models;
 using Microsoft.AspNetCore.SignalR;
 
-namespace EventGenerator
+namespace BRMSystem.EventGenerator
 {
     public class EventGenerateHub
     {
@@ -27,4 +26,5 @@ namespace EventGenerator
             _hubContext.Clients.All.SendAsync("ReceiveEvent", eventData);
         }
     }
+
 }

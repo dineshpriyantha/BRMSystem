@@ -1,3 +1,4 @@
+using BRMSystem.EventGenerator;
 using BusinessLogic.Services;
 using DataAccessLayer;
 using DataAccessLayer.Models;
@@ -10,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<BRMSContext>(con => con.UseSqlServer(builder.Configuration.GetConnectionString("connectionstr")));
 builder.Services.AddScoped<IBorrowerManager, BorrowerManager>();
 builder.Services.AddSignalR();
+//builder.Services.AddSingleton<EventGenerator>();
 
 var app = builder.Build();
 
@@ -28,10 +30,14 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// app.MapHub<EventHub>("/eventHub");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapHub<EventHub>("/eventhub");
+});
 
 app.Run();
