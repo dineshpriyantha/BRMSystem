@@ -66,7 +66,7 @@ namespace BusinessLogic.Services
             }
         }
 
-        private HttpClient GetHttpClient()
+        public HttpClient GetHttpClient()
         {
             string? apiUrl = _configuration.GetSection("AppSettings")["ApiUrl"];
             if (apiUrl != null)

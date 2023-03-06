@@ -55,19 +55,18 @@ namespace BusinessLogic.Services
             return rowsAffected > 0;
         }
 
-        public async Task UpdateBorrower(Borrower borrower)
+        public async Task<bool> UpdateBorrower(Borrower borrower)
         {
-
             if (borrower == null)
             {
-                throw new ArgumentNullException(nameof(borrower));
+                return false;
             }
 
             var existingBorrower = await _context.Borrowers.FirstOrDefaultAsync(s => s.Id == borrower.Id);
 
             if (existingBorrower == null)
             {
-                throw new ArgumentException("The specified borrower does not exist.", nameof(borrower));
+                return false;
             }
 
             existingBorrower.Name = borrower.Name;
@@ -76,7 +75,9 @@ namespace BusinessLogic.Services
             existingBorrower.MailingAddress = borrower.MailingAddress;
 
             _context.Borrowers.Update(existingBorrower);
-            await _context.SaveChangesAsync();
+            var rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
         }
 
         public async Task DeleteBorrower(int? borrowerId)

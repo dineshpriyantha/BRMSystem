@@ -17,10 +17,13 @@ namespace EventGenerator
             _timer = new Timer(GenerateEvents, null, 0, 5000); // Generate events every 5 seconds            
         }
 
-        public void GenerateEvents(object? data)
+        public void GenerateEvents(object data)
         {
-            // Send event to clients
-            _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
+            if(_alert!= null && _hubContext != null && _hubContext.Clients != null && _hubContext.Clients.All != null)
+            {
+                // generate alerts
+                _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
+            }            
         }
     }
 }
