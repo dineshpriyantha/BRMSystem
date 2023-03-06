@@ -68,12 +68,19 @@ namespace BusinessLogic.Services
 
         private HttpClient GetHttpClient()
         {
-            string apiUrl = _configuration.GetSection("AppSettings")["ApiUrl"];
-            var client = new HttpClient()
+            string? apiUrl = _configuration.GetSection("AppSettings")["ApiUrl"];
+            if (apiUrl != null)
             {
-                BaseAddress = new Uri(apiUrl)
-            };
-            return client;
+                var client = new HttpClient()
+                {
+                    BaseAddress = new Uri(apiUrl)
+                };
+                return client;
+            }
+            else
+            {
+                throw new Exception("Apiurl is not configured");
+            }
         }
 
         public async Task<int> GetCreditScore(string borrowerSSN)

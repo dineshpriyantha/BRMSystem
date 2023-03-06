@@ -35,7 +35,7 @@ namespace BRMSystem.Controllers
                 alert.ProcessAlerts();
 
                 var borrower = _borrower.GetBorrowers().Result;
-                ViewBag.Borrowers = borrower;                
+                ViewBag.Borrowers = borrower;          
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace BRMSystem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Borrower borrower)
+        public async Task<IActionResult> Create(Borrower borrower)
         {
             if(!ModelState.IsValid)
             {
@@ -60,8 +60,15 @@ namespace BRMSystem.Controllers
 
             try
             {
-                _borrower.AddBorrower(borrower);
-                ViewBag.message = "Data Saved Successfully..";
+                var result = await _borrower.AddBorrower(borrower);
+                if (result)
+                {
+                    ViewBag.message = "Borrower added successfully.";
+                }
+                else
+                {
+                    ViewBag.message = "Failed to add borrower Check if Name and SSN already exist or not";
+                }                    
             }
             catch (Exception ex)
             {

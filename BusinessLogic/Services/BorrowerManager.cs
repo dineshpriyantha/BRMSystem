@@ -33,15 +33,26 @@ namespace BusinessLogic.Services
             return await _context.Borrowers.ToListAsync();
         }
 
-        public async Task AddBorrower(Borrower borrower)
+        public async Task<bool> AddBorrower(Borrower borrower)
         {
             if(borrower == null)
             {
-                throw new ArgumentException(nameof(borrower));
+                return false;
+            }
+
+            // Check if a borrower with the same name or SSN already exists in the database
+            var existingBorrower = await _context.Borrowers.FirstOrDefaultAsync(b =>
+                b.Name == borrower.Name || b.SSN == borrower.SSN);
+
+            if (existingBorrower != null)
+            {
+                return false;
             }
 
             _context.Borrowers.Add(borrower);
-            await _context.SaveChangesAsync();
+            var rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
         }
 
         public async Task UpdateBorrower(Borrower borrower)

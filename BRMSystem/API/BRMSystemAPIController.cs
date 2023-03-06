@@ -20,12 +20,19 @@ namespace BRMSystem.API
         // Define a method to get a instance of HttpClient with a base address
         private HttpClient GetHttpClient()
         {
-            string url = _configuration.GetSection("AppSettings")["ApiUrl"];
-            var client = new HttpClient() 
-            { 
-                BaseAddress = new Uri(url)
-            };
-            return client;
+            string? url = _configuration.GetSection("AppSettings")["ApiUrl"];
+            if(url != null)
+            {
+                var client = new HttpClient()
+                {
+                    BaseAddress = new Uri(url)
+                };
+                return client;
+            }
+            else
+            {
+                throw new Exception("Apiurl is not configured");
+            }
         }
 
         [HttpGet("creditbureau/{borrowerSSN}")]

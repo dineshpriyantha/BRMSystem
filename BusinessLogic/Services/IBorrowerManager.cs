@@ -9,7 +9,7 @@ namespace BusinessLogic.Services
 {
     public interface IBorrowerManager
     {
-        Task AddBorrower(Borrower borrower);
+        Task<bool> AddBorrower(Borrower borrower);
         Task UpdateBorrower(Borrower borrower);
         Task DeleteBorrower(int? borrowerId);
         Task<Borrower> GetBorrowerById(int? borrowerId);

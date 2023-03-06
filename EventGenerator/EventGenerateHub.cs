@@ -17,7 +17,7 @@ namespace EventGenerator
             _timer = new Timer(GenerateEvents, null, 0, 5000); // Generate events every 5 seconds            
         }
 
-        public void GenerateEvents(object data)
+        public void GenerateEvents(object? data)
         {
             // Send event to clients
             _hubContext.Clients.All.SendAsync("ReceiveEvent", _alert);
