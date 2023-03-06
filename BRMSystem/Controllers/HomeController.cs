@@ -14,21 +14,24 @@ namespace BRMSystem.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IBorrowerManager _borrower;
         private readonly IHubContext<EventHub> _hubContext;
+        private readonly IConfiguration _configuration;
 
         public HomeController(ILogger<HomeController> logger, 
                               IBorrowerManager borrower,
-                              IHubContext<EventHub> hubContext)
+                              IHubContext<EventHub> hubContext,
+                              IConfiguration configuration)
         {
             _logger = logger;
             _borrower = borrower;
             _hubContext = hubContext;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
             try
             {
-                AlertManager alert = new(_borrower, _hubContext);
+                AlertManager alert = new(_borrower, _hubContext, _configuration);
                 alert.ProcessAlerts();
 
                 var borrower = _borrower.GetBorrowers().Result;
@@ -52,7 +55,7 @@ namespace BRMSystem.Controllers
         {
             if(!ModelState.IsValid)
             {
-                return View(borrower);         
+                return View(borrower);
             }
 
             try

@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Net;
 
 namespace BRMSystem.API
@@ -9,12 +10,20 @@ namespace BRMSystem.API
     [ApiController]
     public class BRMSystemAPIController : ControllerBase, IBRMSService
     {
+        private readonly IConfiguration _configuration;
+
+        public BRMSystemAPIController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // Define a method to get a instance of HttpClient with a base address
         private HttpClient GetHttpClient()
         {
+            string url = _configuration.GetSection("AppSettings")["ApiUrl"];
             var client = new HttpClient() 
             { 
-                BaseAddress = new Uri("https://localhost:7034/api/") 
+                BaseAddress = new Uri(url)
             };
             return client;
         }
